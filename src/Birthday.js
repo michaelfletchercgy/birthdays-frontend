@@ -5,7 +5,7 @@ class Birthday extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isEditable: false,
+            isEditable: props.item.id === 0,
             id: props.item.id,
             title: props.item.title,
             year: props.item.year == null ? "" : props.item.year,
@@ -40,7 +40,7 @@ class Birthday extends React.Component {
             body: JSON.stringify({
                 id: this.state.id,
                 title: this.state.title,
-                year: this.state.year.trim().length === 0 ? null : Number(this.state.year),
+                year: this.state.year === "" ? null : Number(this.state.year),
                 month: Number(this.state.month),
                 day: Number(this.state.day)
             })
@@ -50,11 +50,15 @@ class Birthday extends React.Component {
             (result) => {
                 this.setState({
                     isEditable: false,
-                    item: result
+                    id: result.id,
+                    title: result.title,
+                    year: result.year == null ? "" : result.year,
+                    month: result.month,
+                    day: result.day
                 })
             },
             (error) => {
-                alert('boom');
+                alert('boom:' + error);
             }
         )
     }
