@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-//import App from './App';
 import Birthday from './Birthday'
 import registerServiceWorker from './registerServiceWorker';
 
@@ -89,8 +88,6 @@ class Birthdays extends React.Component {
         newState.password = e.target.value;
         this.setState(newState);
     }
-
-
 
     render() {
         if (!this.state.isLoggedIn) {
