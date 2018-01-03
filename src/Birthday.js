@@ -1,35 +1,35 @@
 import React from 'react';
-
-
+import Dialog, {
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+  } from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
+import Button from 'material-ui/Button';
+  
 class Birthday extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isEditable: props.item.id === 0,
-            id: props.item.id,
-            title: props.item.title,
-            year: props.item.year == null ? "" : props.item.year,
-            month: props.item.month,
-            day: props.item.day
+            open: false,
+            id: 0,
+            title: "",
+            year: "",
+            month: "",
+            day: ""
         }
         
         // Because JavaScript
-        this.editClicked = this.editClicked.bind(this);
-        this.saveClicked = this.saveClicked.bind(this);
+        this.cancelClicked = this.cancelClicked.bind(this);
+        this.addClicked = this.addClicked.bind(this);
         this.titleTextChanged = this.titleTextChanged.bind(this);
         this.yearTextChanged = this.yearTextChanged.bind(this);
         this.monthTextChanged = this.monthTextChanged.bind(this);
         this.dayTextChanged = this.dayTextChanged.bind(this);
     }
 
-    editClicked() {
-        let newState = { };
-        Object.assign(newState, this.state);
-        newState.isEditable = true;
-        this.setState(newState);
-    }
-
-    saveClicked() {
+    addClicked() {
         fetch("/api/birthdays/" + this.state.id, {
             method: 'POST',
             credentials: 'same-origin',
@@ -55,12 +55,17 @@ class Birthday extends React.Component {
                     year: result.year == null ? "" : result.year,
                     month: result.month,
                     day: result.day
-                })
+                });
+                this.props.onDialogFinished();
             },
             (error) => {
                 alert('boom:' + error);
             }
         )
+    }
+
+    cancelClicked() {
+        this.props.onDialogFinished();
     }
 
     titleTextChanged(e) {
@@ -92,29 +97,48 @@ class Birthday extends React.Component {
     }
 
     render()  {
-        if (this.state.isEditable) {
-            return (
-                <tr>
-                    <td>{this.state.id}</td>
-                    <td><input type="text" value={this.state.title} onChange={this.titleTextChanged} /></td>
-                    <td><input type="text" value={this.state.year} onChange={this.yearTextChanged} /></td>
-                    <td><input type="text" value={this.state.month} onChange={this.monthTextChanged} /></td>
-                    <td><input type="text" value={this.state.day} onChange={this.dayTextChanged} /></td>
-                    <td><button onClick={this.saveClicked}>Save</button></td>
-                </tr>
-            )
-        } else {
-            return (
-                <tr>
-                    <td>{this.state.id}</td>
-                    <td>{this.state.title}</td>
-                    <td>{this.state.year}</td>
-                    <td>{this.state.month}</td>
-                    <td>{this.state.day}</td>
-                    <td><button onClick={this.editClicked}>Edit</button></td>
-                </tr>
-            )
-        }
+        return (<Dialog open="true" onClose={this.newDialogCanceled}>
+                    <DialogTitle>New Birthday</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            id="title"
+                            label="Title"
+                            required="true"
+                            onChange={this.titleTextChanged}
+                            />
+                    </DialogContent>
+                    <DialogContent>
+                        <TextField
+                            id="year"
+                            label="Year"
+                            onChange={this.yearTextChanged}
+                            />
+                    </DialogContent>
+                    <DialogContent>
+                        <TextField
+                            id="month"
+                            label="Month"
+                            required="true"
+                            onChange={this.monthTextChanged}
+                            />
+                    </DialogContent>                            
+                    <DialogContent>
+                        <TextField
+                            id="day"
+                            label="Day"
+                            required="true"
+                            onChange={this.dayTextChanged}
+                            />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.cancelClicked} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={this.addClicked} color="primary">
+                            Add
+                        </Button>
+                    </DialogActions>
+                </Dialog>)
     }
 
 

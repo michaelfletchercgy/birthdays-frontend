@@ -1,8 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import './index.css';
+import { withStyles } from 'material-ui/styles';
+
 import Birthday from './Birthday'
+import AppBar from 'material-ui/AppBar';
+import MenuIcon from 'material-ui-icons/Menu';
+import IconButton from 'material-ui/IconButton';
+import Typography from 'material-ui/Typography';
+import Button from 'material-ui/Button';
+import Toolbar from 'material-ui/Toolbar';
+import 'typeface-roboto'
 import registerServiceWorker from './registerServiceWorker';
+import List, { ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
+import MoreHoriz from 'material-ui-icons/MoreHoriz';
+  
+  
+const styles = {
+    root: {
+      width: '100%',
+    },
+    flex: {
+      flex: 1,
+    },
+    menuButton: {
+      marginLeft: -12,
+      marginRight: 20,
+    },
+  };
 
 class Birthdays extends React.Component {
     constructor(props) {
@@ -10,8 +36,7 @@ class Birthdays extends React.Component {
         this.state = {
             isLoggedIn: false,
             isLoaded: false,
-            isEditable: false,
-            isAdding: false,
+            adding: false,
             user: "",
             password: "",
             items: []
@@ -19,9 +44,13 @@ class Birthdays extends React.Component {
 
         // Because JavaScript        
         this.addClicked = this.addClicked.bind(this);
+        this.loadData = this.loadData.bind(this);
+        this.addDialogFinished = this.addDialogFinished.bind(this);
+
         this.loginClicked = this.loginClicked.bind(this);
         this.userTextChanged = this.userTextChanged.bind(this);
-        this.passwordTextChanged = this.passwordTextChanged.bind(this);        
+        this.passwordTextChanged = this.passwordTextChanged.bind(this);                
+    
     }
 
     loginClicked() {
@@ -37,15 +66,19 @@ class Birthdays extends React.Component {
         
     }
 
+
+
     componentDidMount() {
+        this.loadData();
+    }
+
+    loadData() {
         fetch("/api/birthdays", { credentials: 'include' })
             .then( response => { 
                 if (response.status === 401) {
                     this.setState({
                         isLoggedIn: false,
                         isLoaded: false,
-                        isEditable: false,
-                        isAdding: false,
                         items: []
                     });
                 } else {
@@ -53,8 +86,6 @@ class Birthdays extends React.Component {
                         this.setState({
                             isLoggedIn: true,
                             isLoaded: true,
-                            isEditable: false,
-                            isAdding: false,
                             items: data
                         });
                     });                    
@@ -65,16 +96,28 @@ class Birthdays extends React.Component {
             });
     }
 
+
+    handleClickOpen = () => {
+        this.setState({ open: true });
+    };
+
     addClicked() {
-        let items =this.state.items;
-        items.push({ id: 0, title:""});
-        this.setState({
-            isLoaded: true,
-            isEditable: false,
-            items: items
-        })
+        let newState = { };
+        Object.assign(newState, this.state);
+        newState.adding = true;
+        this.setState(newState);
+
     }
-    
+
+    addDialogFinished() {
+        let newState = { };
+        Object.assign(newState, this.state);
+        newState.adding = false;
+        this.setState(newState);
+
+        this.loadData();
+    }
+
     userTextChanged(e) {
         let newState = { };
         Object.assign(newState, this.state);
@@ -98,27 +141,38 @@ class Birthdays extends React.Component {
             </div>);
         } else if (this.state.isLoaded) {
             return (
-                <div>
-                
-                <table>
-                    <thead>
-                        <tr>
-                            <td></td>
-                            <td>Title</td>
-                            <td>Year</td>
-                            <td>Month</td>
-                            <td>Day</td>
-                            <td></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.items.map(item => (
-                            <Birthday key={item.id} item={item} />
-                        ))}
-                    </tbody>
-                </table>
+                <div className={this.props.classes.root}>
+                    <AppBar position="static">
+                        <Toolbar>
+                            <IconButton className={this.props.classes.menuButton} color="contrast" aria-label="Menu">
+                                <MenuIcon />
+                            </IconButton>
 
-                <button onClick={this.addClicked}>Add</button>
+                            <Typography type="title" color="inherit" className={this.props.classes.flex}>
+                                Birthdays
+                            </Typography>
+                            
+                            <Button color="contrast" onClick={this.addClicked}>Add</Button>
+                        </Toolbar>
+                    </AppBar>
+                    <List>
+                        {this.state.items.map(item => (
+                            <ListItem key={item.id}>
+                                <ListItemText insetChildren={true} 
+                                    primary={item.title} 
+                                    secondary={item.year + "/" + item.month + "/" + item.day} />
+                                <ListItemSecondaryAction>
+                                    <IconButton aria-label="Comments">
+                                        <MoreHoriz />
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        ))}                    
+                    </List>
+                    { this.state.adding && 
+                        <Birthday onDialogFinished={this.addDialogFinished} />
+                    }
+                    
 
                 </div>
             )
@@ -129,5 +183,8 @@ class Birthdays extends React.Component {
     }
 }
 
-ReactDOM.render(<Birthdays />, document.getElementById('root'));
+let StyledBirthdays = withStyles(styles)(Birthdays)
+
+ReactDOM.render(<StyledBirthdays />, document.getElementById('root'));
 registerServiceWorker();
+
