@@ -2,22 +2,21 @@ import React from 'react';
 import Dialog, {
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
   } from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
   
-class Birthday extends React.Component {
+class EditBirthdayDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
-            id: 0,
-            title: "",
-            year: "",
-            month: "",
-            day: ""
+            id: props.item.id,
+            title: props.item.title,
+            year: props.item.year,
+            month: props.item.month,
+            day: props.item.day
         }
         
         // Because JavaScript
@@ -104,6 +103,7 @@ class Birthday extends React.Component {
                             id="title"
                             label="Title"
                             required="true"
+                            value={this.state.title}
                             onChange={this.titleTextChanged}
                             />
                     </DialogContent>
@@ -111,6 +111,7 @@ class Birthday extends React.Component {
                         <TextField
                             id="year"
                             label="Year"
+                            value={this.state.year}
                             onChange={this.yearTextChanged}
                             />
                     </DialogContent>
@@ -119,6 +120,7 @@ class Birthday extends React.Component {
                             id="month"
                             label="Month"
                             required="true"
+                            value={this.state.month}
                             onChange={this.monthTextChanged}
                             />
                     </DialogContent>                            
@@ -127,6 +129,7 @@ class Birthday extends React.Component {
                             id="day"
                             label="Day"
                             required="true"
+                            value={this.state.day}
                             onChange={this.dayTextChanged}
                             />
                     </DialogContent>
@@ -144,4 +147,4 @@ class Birthday extends React.Component {
 
 }
 
-export default Birthday;
+export default EditBirthdayDialog;

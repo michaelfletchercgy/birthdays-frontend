@@ -4,7 +4,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { withStyles } from 'material-ui/styles';
 
-import Birthday from './Birthday'
+import EditBirthdayDialog from './EditBirthdayDialog'
+import BirthdayItem from './BirthdayItem'
 import AppBar from 'material-ui/AppBar';
 import MenuIcon from 'material-ui-icons/Menu';
 import IconButton from 'material-ui/IconButton';
@@ -14,7 +15,6 @@ import Toolbar from 'material-ui/Toolbar';
 import 'typeface-roboto'
 import registerServiceWorker from './registerServiceWorker';
 import List, { ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
-import MoreHoriz from 'material-ui-icons/MoreHoriz';
   
   
 const styles = {
@@ -36,7 +36,7 @@ class Birthdays extends React.Component {
         this.state = {
             isLoggedIn: false,
             isLoaded: false,
-            adding: false,
+            editingItem: null,
             user: "",
             password: "",
             items: []
@@ -44,8 +44,10 @@ class Birthdays extends React.Component {
 
         // Because JavaScript        
         this.addClicked = this.addClicked.bind(this);
+        this.editClicked = this.editClicked.bind(this);
+        this.removeClicked = this.removeClicked.bind(this);
         this.loadData = this.loadData.bind(this);
-        this.addDialogFinished = this.addDialogFinished.bind(this);
+        this.editDialogFinished = this.editDialogFinished.bind(this);
 
         this.loginClicked = this.loginClicked.bind(this);
         this.userTextChanged = this.userTextChanged.bind(this);
@@ -104,17 +106,32 @@ class Birthdays extends React.Component {
     addClicked() {
         let newState = { };
         Object.assign(newState, this.state);
-        newState.adding = true;
+        newState.editingItem = {
+            id: 0,
+            title: "",
+            year: "",
+            month: "",
+            day: ""
+        };
         this.setState(newState);
 
     }
 
-    addDialogFinished() {
-        let newState = { };
-        Object.assign(newState, this.state);
-        newState.adding = false;
-        this.setState(newState);
+    editClicked(item) {
+        this.setState({
+            editingItem: item
+        });
+    }
 
+    removeClicked(item) {
+        
+    }
+
+    editDialogFinished() {
+        this.setState({
+            editingItem: null
+        });
+        
         this.loadData();
     }
 
@@ -156,24 +173,13 @@ class Birthdays extends React.Component {
                         </Toolbar>
                     </AppBar>
                     <List>
-                        {this.state.items.map(item => (
-                            <ListItem key={item.id}>
-                                <ListItemText insetChildren={true} 
-                                    primary={item.title} 
-                                    secondary={item.year + "/" + item.month + "/" + item.day} />
-                                <ListItemSecondaryAction>
-                                    <IconButton aria-label="Comments">
-                                        <MoreHoriz />
-                                    </IconButton>
-                                </ListItemSecondaryAction>
-                            </ListItem>
-                        ))}                    
+                        {this.state.items.map(item => 
+                            (<BirthdayItem item={item} editClicked={this.editClicked} removeClicked={this.removeClicked}/>)
+                        )}                    
                     </List>
-                    { this.state.adding && 
-                        <Birthday onDialogFinished={this.addDialogFinished} />
+                    { this.state.editingItem != null && 
+                        <EditBirthdayDialog item={this.state.editingItem} onDialogFinished={this.editDialogFinished} />
                     }
-                    
-
                 </div>
             )
         } else {
