@@ -64,6 +64,7 @@ class Birthdays extends React.Component {
             Object.assign(newState, this.state);
             newState.isLoggedIn=true;
             this.setState(newState);
+            this.loadData();
         });
         
     }
