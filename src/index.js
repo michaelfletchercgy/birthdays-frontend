@@ -5,6 +5,7 @@ import './index.css';
 import { withStyles } from 'material-ui/styles';
 
 import EditBirthdayDialog from './EditBirthdayDialog'
+import RemoveBirthdayDialog from './RemoveBirthdayDialog'
 import BirthdayItem from './BirthdayItem'
 import AppBar from 'material-ui/AppBar';
 import MenuIcon from 'material-ui-icons/Menu';
@@ -37,6 +38,7 @@ class Birthdays extends React.Component {
             isLoggedIn: false,
             isLoaded: false,
             editingItem: null,
+            removingItem: null,
             user: "",
             password: "",
             items: []
@@ -48,6 +50,7 @@ class Birthdays extends React.Component {
         this.removeClicked = this.removeClicked.bind(this);
         this.loadData = this.loadData.bind(this);
         this.editDialogFinished = this.editDialogFinished.bind(this);
+        this.removeDialogFinished = this.removeDialogFinished.bind(this);
 
         this.loginClicked = this.loginClicked.bind(this);
         this.userTextChanged = this.userTextChanged.bind(this);
@@ -125,7 +128,9 @@ class Birthdays extends React.Component {
     }
 
     removeClicked(item) {
-        
+        this.setState({
+            removingItem: item
+        });
     }
 
     editDialogFinished() {
@@ -133,6 +138,14 @@ class Birthdays extends React.Component {
             editingItem: null
         });
         
+        this.loadData();
+    }
+
+    removeDialogFinished() {
+        this.setState({
+            removingItem: null
+        });
+
         this.loadData();
     }
 
@@ -180,6 +193,9 @@ class Birthdays extends React.Component {
                     </List>
                     { this.state.editingItem != null && 
                         <EditBirthdayDialog item={this.state.editingItem} onDialogFinished={this.editDialogFinished} />
+                    }
+                    { this.state.removingItem != null &&
+                        <RemoveBirthdayDialog item={this.state.removingItem} onDialogFinished={this.removeDialogFinished} />
                     }
                 </div>
             )
