@@ -39,9 +39,9 @@ class EditBirthdayDialog extends React.Component {
             body: JSON.stringify({
                 id: this.state.id,
                 title: this.state.title,
-                year: this.state.year === "" ? null : Number(this.state.year),
-                month: Number(this.state.month),
-                day: Number(this.state.day)
+                year: this.state.year,
+                month: this.state.month,
+                day: this.state.day
             })
         })        
         .then( response => response.json() )
