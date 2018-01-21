@@ -15,7 +15,7 @@ import Button from 'material-ui/Button';
 import Toolbar from 'material-ui/Toolbar';
 import 'typeface-roboto'
 import registerServiceWorker from './registerServiceWorker';
-import List, { ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
+import List from 'material-ui/List';
   
   
 const styles = {

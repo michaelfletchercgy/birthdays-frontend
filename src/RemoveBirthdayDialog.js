@@ -5,7 +5,6 @@ import Dialog, {
     DialogContentText,
     DialogTitle,
   } from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
   
 class RemoveBirthdayDialog extends React.Component {

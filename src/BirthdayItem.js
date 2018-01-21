@@ -1,18 +1,10 @@
 import React from 'react';
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-  } from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
-import Button from 'material-ui/Button';
 
 import Menu, { MenuItem } from 'material-ui/Menu';
 import IconButton from 'material-ui/IconButton';
 import MoreHoriz from 'material-ui-icons/MoreHoriz';
 
-import List, { ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
+import { ListItem, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
 
 
 class BirthdayItem extends React.Component {
