@@ -6,6 +6,8 @@ import Dialog, {
   } from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
+import MenuItem from 'material-ui/Menu/MenuItem';
+
   
 class EditBirthdayDialog extends React.Component {
     constructor(props) {
@@ -16,7 +18,9 @@ class EditBirthdayDialog extends React.Component {
             title: props.item.title,
             year: props.item.year,
             month: props.item.month,
-            day: props.item.day
+            months: [],
+            day: props.item.day,
+            days: []            
         }
         
         // Because JavaScript
@@ -26,7 +30,63 @@ class EditBirthdayDialog extends React.Component {
         this.yearTextChanged = this.yearTextChanged.bind(this);
         this.monthTextChanged = this.monthTextChanged.bind(this);
         this.dayTextChanged = this.dayTextChanged.bind(this);
+        this.loadDays = this.loadDays.bind(this)
     }
+
+    makeBirthdayJson(mth) {
+        return {
+            id: this.state.id,
+            title: this.state.title,
+            year: this.state.year,
+            month: mth,
+            day: this.state.day
+        }
+    }
+
+
+    loadDays(mth) {
+        //ok, this isn't working, the setState isn't updated yet.
+        //alert(this.state.month);
+        fetch("/api/birthdays/day/list", { 
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            
+            body: JSON.stringify(this.makeBirthdayJson(mth))
+        })
+        .then( response => response.json() )
+        .then( response => { 
+            this.setState({
+                days: response
+            });                
+        })
+        .catch( (err) => { 
+            alert('oh no, something bad happened:' + err)
+        });
+    }
+
+
+    
+    componentDidMount() {
+        this.loadDays(this.state.month);
+
+        fetch("/api/birthdays/month/list", { credentials: 'include' })
+            .then( response => response.json() )
+            .then( response => { 
+                this.setState({
+                    months: response
+                });                
+            })
+            .catch( (err) => { 
+                alert('oh no, something bad happened:' + err)
+            });
+    }
+
+    
+
 
     addClicked() {
         fetch("/api/birthdays/" + this.state.id, {
@@ -82,10 +142,28 @@ class EditBirthdayDialog extends React.Component {
     }
 
     monthTextChanged(e) {
-        let newState = { };
-        Object.assign(newState, this.state);
-        newState.month = e.target.value;
-        this.setState(newState);
+        var mth = "" + e.target.value;
+
+        var json = this.makeBirthdayJson(mth)
+
+        fetch("/api/birthdays/month/set", {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+            body: JSON.stringify(json)
+        })        
+        .then( response => response.json() )
+        .then( (result) => {
+                this.setState(result);
+                this.loadDays(mth);
+            },
+            (error) => {
+                alert('boom:' + error);
+            }
+        )
     }
 
     dayTextChanged(e) {
@@ -96,13 +174,13 @@ class EditBirthdayDialog extends React.Component {
     }
 
     render()  {
-        return (<Dialog open="true" onClose={this.newDialogCanceled}>
+        return (<Dialog open={true} onClose={this.newDialogCanceled}>
                     <DialogTitle>New Birthday</DialogTitle>
                     <DialogContent>
                         <TextField
                             id="title"
                             label="Title"
-                            required="true"
+                            required={true}
                             value={this.state.title}
                             onChange={this.titleTextChanged}
                             />
@@ -117,21 +195,36 @@ class EditBirthdayDialog extends React.Component {
                     </DialogContent>
                     <DialogContent>
                         <TextField
+                            select={true}
                             id="month"
                             label="Month"
-                            required="true"
+                            required={true}
                             value={this.state.month}
                             onChange={this.monthTextChanged}
-                            />
-                    </DialogContent>                            
+                        >
+                                {this.state.months.map(option => (
+                                    <MenuItem key={option} value={option}>
+                                      {option}
+                                    </MenuItem>
+                                ))}
+                            
+                        </TextField>                        
+                    </DialogContent>
                     <DialogContent>
                         <TextField
+                            select={true}
                             id="day"
                             label="Day"
-                            required="true"
+                            required={true}
                             value={this.state.day}
                             onChange={this.dayTextChanged}
-                            />
+                        >
+                            {this.state.days.map(option => (
+                                <MenuItem key={option} value={option}>
+                                {option}
+                                </MenuItem>
+                            ))}
+                        </TextField>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={this.cancelClicked} color="primary">
@@ -143,8 +236,6 @@ class EditBirthdayDialog extends React.Component {
                     </DialogActions>
                 </Dialog>)
     }
-
-
 }
 
 export default EditBirthdayDialog;

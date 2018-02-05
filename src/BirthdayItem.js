@@ -43,9 +43,9 @@ class BirthdayItem extends React.Component {
     render() {
         return (
             <ListItem key={this.props.item.id}>
-                <ListItemText insetChildren={true} 
+                <ListItemText
                         primary={this.props.item.title} 
-                        secondary={this.props.item.year + "/" + this.props.item.month + "/" + this.props.item.day} />
+                        secondary={this.props.item.short_display} />
                 <ListItemSecondaryAction>
                     <IconButton aria-label="Comments" onClick={this.openMenu}>
                         <MoreHoriz />

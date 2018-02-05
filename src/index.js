@@ -175,7 +175,7 @@ class Birthdays extends React.Component {
                 <div className={this.props.classes.root}>
                     <AppBar position="static">
                         <Toolbar>
-                            <IconButton className={this.props.classes.menuButton} color="contrast" aria-label="Menu">
+                            <IconButton className={this.props.classes.menuButton} color="inherit" aria-label="Menu">
                                 <MenuIcon />
                             </IconButton>
 
@@ -183,12 +183,12 @@ class Birthdays extends React.Component {
                                 Birthdays
                             </Typography>
                             
-                            <Button color="contrast" onClick={this.addClicked}>Add</Button>
+                            <Button color="inherit" onClick={this.addClicked}>Add</Button>
                         </Toolbar>
                     </AppBar>
                     <List>
                         {this.state.items.map(item => 
-                            (<BirthdayItem item={item} editClicked={this.editClicked} removeClicked={this.removeClicked}/>)
+                            (<BirthdayItem key={item.id} item={item} editClicked={this.editClicked} removeClicked={this.removeClicked}/>)
                         )}                    
                     </List>
                     { this.state.editingItem != null && 
