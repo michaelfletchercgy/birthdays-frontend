@@ -79,7 +79,7 @@ class Birthdays extends React.Component {
     }
 
     loadData() {
-        fetch("/api/birthdays", { credentials: 'include' })
+        fetch("/api/birthdays?sort=next", { credentials: 'include' })
             .then( response => { 
                 if (response.status === 401) {
                     this.setState({
