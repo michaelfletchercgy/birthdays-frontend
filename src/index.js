@@ -9,6 +9,9 @@ import RemoveBirthdayDialog from './RemoveBirthdayDialog'
 import BirthdayItem from './BirthdayItem'
 import AppBar from 'material-ui/AppBar';
 import MenuIcon from 'material-ui-icons/Menu';
+import PersonIcon from 'material-ui-icons/Person';
+import ScheduleIcon from 'material-ui-icons/Schedule';
+import { ListItem, ListItemText, ListItemIcon } from 'material-ui/List';
 import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
@@ -16,8 +19,8 @@ import Toolbar from 'material-ui/Toolbar';
 import 'typeface-roboto'
 import registerServiceWorker from './registerServiceWorker';
 import List from 'material-ui/List';
-  
-  
+import Drawer from 'material-ui/Drawer';  
+import ListSubheader from 'material-ui/List/ListSubheader';
 const styles = {
     root: {
       width: '100%',
@@ -39,6 +42,8 @@ class Birthdays extends React.Component {
             isLoaded: false,
             editingItem: null,
             removingItem: null,
+            drawerOpen: false,
+            sortBy: "next",
             user: "",
             password: "",
             items: []
@@ -51,11 +56,42 @@ class Birthdays extends React.Component {
         this.loadData = this.loadData.bind(this);
         this.editDialogFinished = this.editDialogFinished.bind(this);
         this.removeDialogFinished = this.removeDialogFinished.bind(this);
+        this.toggleDrawer = this.toggleDrawer.bind(this);
 
         this.loginClicked = this.loginClicked.bind(this);
         this.userTextChanged = this.userTextChanged.bind(this);
         this.passwordTextChanged = this.passwordTextChanged.bind(this);                
+
+        this.sortByName = this.sortByName.bind(this);                
+        this.sortByBirthday = this.sortByBirthday.bind(this);                
     
+    }
+
+    toggleDrawer() {
+        this.setState({
+            drawerOpen: !this.state.drawerOpen
+        });        
+    }
+
+    sortByName() {
+        this.setState({
+            sortBy: "title"
+        });
+        
+        this.toggleDrawer();
+        this.loadData("title");
+
+        // TODO Ponder how to get state into the render, or perhaps when loadData actually happens as wel have to
+        // load data wtice here.
+    }
+
+    sortByBirthday() {
+        this.setState({
+            sortBy: "next"
+        });
+        
+        this.toggleDrawer();
+        this.loadData("next");
     }
 
     loginClicked() {
@@ -67,19 +103,17 @@ class Birthdays extends React.Component {
             Object.assign(newState, this.state);
             newState.isLoggedIn=true;
             this.setState(newState);
-            this.loadData();
+            this.loadData(this.state.sortBy);
         });
         
     }
 
-
-
     componentDidMount() {
-        this.loadData();
+        this.loadData(this.state.sortBy);
     }
 
-    loadData() {
-        fetch("/api/birthdays?sort=next", { credentials: 'include' })
+    loadData(sortBy) {
+        fetch("/api/birthdays?sort=" + sortBy, { credentials: 'include' })
             .then( response => { 
                 if (response.status === 401) {
                     this.setState({
@@ -138,7 +172,7 @@ class Birthdays extends React.Component {
             editingItem: null
         });
         
-        this.loadData();
+        this.loadData(this.state.sortBy);
     }
 
     removeDialogFinished() {
@@ -146,7 +180,7 @@ class Birthdays extends React.Component {
             removingItem: null
         });
 
-        this.loadData();
+        this.loadData(this.state.sortBy);
     }
 
     userTextChanged(e) {
@@ -175,7 +209,7 @@ class Birthdays extends React.Component {
                 <div className={this.props.classes.root}>
                     <AppBar position="static">
                         <Toolbar>
-                            <IconButton className={this.props.classes.menuButton} color="inherit" aria-label="Menu">
+                            <IconButton className={this.props.classes.menuButton} color="inherit" aria-label="Menu" onClick={this.toggleDrawer}>
                                 <MenuIcon />
                             </IconButton>
 
@@ -186,6 +220,27 @@ class Birthdays extends React.Component {
                             <Button color="inherit" onClick={this.addClicked}>Add</Button>
                         </Toolbar>
                     </AppBar>
+                    <Drawer open={this.state.drawerOpen}>
+                            <div
+                                tabIndex={0}
+                                role="button"
+                            >
+                                <List subheader={<ListSubheader>Sorting</ListSubheader>}>
+                                    <ListItem button onClick={this.sortByBirthday}>
+                                        <ListItemIcon>
+                                            <ScheduleIcon />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Sort by birthday" />
+                                    </ListItem>
+                                    <ListItem button  onClick={this.sortByName}>
+                                        <ListItemIcon>
+                                            <PersonIcon />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Sort by name" />
+                                    </ListItem>
+                                </List>
+                            </div>
+                    </Drawer>
                     <List>
                         {this.state.items.map(item => 
                             (<BirthdayItem key={item.id} item={item} editClicked={this.editClicked} removeClicked={this.removeClicked}/>)
