@@ -95,7 +95,7 @@ class Birthdays extends React.Component {
     }
 
     loginClicked() {
-        fetch("/api/login?user_id=" + this.state.user + "&password=" + this.state.password,
+        fetch("api/login?user_id=" + this.state.user + "&password=" + this.state.password,
             { credentials: 'same-origin' }
         )
         .then((result) => { 
@@ -113,7 +113,7 @@ class Birthdays extends React.Component {
     }
 
     loadData(sortBy) {
-        fetch("/api/birthdays?sort=" + sortBy, { credentials: 'include' })
+        fetch("api/birthdays?sort=" + sortBy, { credentials: 'include' })
             .then( response => { 
                 if (response.status === 401) {
                     this.setState({

@@ -47,7 +47,7 @@ class EditBirthdayDialog extends React.Component {
     loadDays(mth) {
         //ok, this isn't working, the setState isn't updated yet.
         //alert(this.state.month);
-        fetch("/api/birthdays/day/list", { 
+        fetch("api/birthdays/day/list", { 
             method: 'POST',
             credentials: 'same-origin',
             headers: {
@@ -73,7 +73,7 @@ class EditBirthdayDialog extends React.Component {
     componentDidMount() {
         this.loadDays(this.state.month);
 
-        fetch("/api/birthdays/month/list", { credentials: 'include' })
+        fetch("api/birthdays/month/list", { credentials: 'include' })
             .then( response => response.json() )
             .then( response => { 
                 this.setState({
@@ -89,7 +89,7 @@ class EditBirthdayDialog extends React.Component {
 
 
     addClicked() {
-        fetch("/api/birthdays/" + this.state.id, {
+        fetch("api/birthdays/" + this.state.id, {
             method: 'POST',
             credentials: 'same-origin',
             headers: {
@@ -144,9 +144,10 @@ class EditBirthdayDialog extends React.Component {
     monthTextChanged(e) {
         var mth = "" + e.target.value;
 
+        // TODO at some point should adjust this, this isnt' json., its an obecjt.
         var json = this.makeBirthdayJson(mth)
 
-        fetch("/api/birthdays/month/set", {
+        fetch("api/birthdays/month/set", {
             method: 'POST',
             credentials: 'same-origin',
             headers: {

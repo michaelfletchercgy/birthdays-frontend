@@ -21,7 +21,7 @@ class RemoveBirthdayDialog extends React.Component {
     }
 
     removeClicked() {
-        fetch("/api/birthdays/" + this.state.id, {
+        fetch("api/birthdays/" + this.state.id, {
             method: 'DELETE',
             credentials: 'same-origin',            
         })        
