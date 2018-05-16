@@ -18,7 +18,9 @@ import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import Toolbar from 'material-ui/Toolbar';
 import 'typeface-roboto'
-import registerServiceWorker from './registerServiceWorker';
+//import registerServiceWorker from './registerServiceWorker';
+import { unregister } from './registerServiceWorker';
+
 import List from 'material-ui/List';
 import Drawer from 'material-ui/Drawer';  
 import ListSubheader from 'material-ui/List/ListSubheader';
@@ -368,5 +370,5 @@ class Birthdays extends React.Component {
 let StyledBirthdays = withStyles(styles)(Birthdays)
 
 ReactDOM.render(<StyledBirthdays />, document.getElementById('root'));
-// there can be only one registerServiceWorker();
+unregister();
 
