@@ -10,8 +10,9 @@ import BirthdayItem from './BirthdayItem'
 import AppBar from 'material-ui/AppBar';
 import MenuIcon from 'material-ui-icons/Menu';
 import PersonIcon from 'material-ui-icons/Person';
+import NotificationsIcon from 'material-ui-icons/Notifications';
 import ScheduleIcon from 'material-ui-icons/Schedule';
-import { ListItem, ListItemText, ListItemIcon } from 'material-ui/List';
+import { ListItem, ListItemText, ListItemIcon, ListItemSecondaryAction } from 'material-ui/List';
 import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
@@ -21,6 +22,9 @@ import registerServiceWorker from './registerServiceWorker';
 import List from 'material-ui/List';
 import Drawer from 'material-ui/Drawer';  
 import ListSubheader from 'material-ui/List/ListSubheader';
+import Switch from 'material-ui/Switch';
+import Divider from 'material-ui/Divider';
+
 const styles = {
     root: {
       width: '100%',
@@ -43,6 +47,7 @@ class Birthdays extends React.Component {
             editingItem: null,
             removingItem: null,
             drawerOpen: false,
+            notifications: false,
             sortBy: "next",
             user: "",
             password: "",
@@ -62,8 +67,9 @@ class Birthdays extends React.Component {
         this.userTextChanged = this.userTextChanged.bind(this);
         this.passwordTextChanged = this.passwordTextChanged.bind(this);                
 
-        this.sortByName = this.sortByName.bind(this);                
-        this.sortByBirthday = this.sortByBirthday.bind(this);                
+        this.sortByName = this.sortByName.bind(this);
+        this.sortByBirthday = this.sortByBirthday.bind(this);
+        this.toggleNotifications = this.toggleNotifications.bind(this);
     
     }
 
@@ -108,13 +114,96 @@ class Birthdays extends React.Component {
         
     }
 
+    toggleNotifications() {
+        if (this.state.notifications) {
+
+            var notificationId = window.localStorage.getItem("notificationId");
+        
+
+            window.localStorage.setItem("notificationId", null);
+            this.setState({
+                notifications: false
+            });
+
+            fetch("api/sw/unsubscribe", { credentials: 'include' })
+                .then( response => {
+                    console.log("api/sw/unsubscribe response:", response);
+                    
+                    fetch("api/subscriptions/" + notificationId, { 
+                        method: 'DELETE',
+                        credentials: 'same-origin',
+                    }).then(response => { 
+                        console.log("delete then", response);
+                    });
+                });
+        } else {
+            var parentThis = this;
+            Notification.requestPermission(function (permission) {
+                // If the user accepts, let's create a notification
+                if (permission === "granted") {
+                    // TODO there might be a tricky situation where the service worker is not installed yet.
+
+                    fetch("api/sw/subscribe", { credentials: 'include' })
+                        .then( response => {
+                            console.log(response);
+                            
+                            return response.json();
+                        })
+                        .then ( json => { 
+                            console.log(json);
+                            parentThis.setState({
+                                notifications: true
+                            });
+
+                            window.localStorage.setItem("notificationId", json.id);
+                        })
+                                        
+                } else {
+                    // TODO should be much like the other side of the toggle
+                }
+            }); 
+        }
+
+        // TODO this whole thing should be restructured to use the promises api
+    }
+
     componentDidMount() {
         this.loadData(this.state.sortBy);
+
+        // First, we should enable the notifications service worker.  We should have some state if it is successful.
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register("sw-notifications.js")
+                .then(function(registration) { 
+                    console.log("Service worker is registered.");
+                    /*
+                    this.setState({
+                        notificationsAvailable: true
+                    })
+                    */
+                }).catch(function(error) {
+                    console.log("Could not register service worker:", error);
+                });
+        }
+
+        // Then we should retrieve the users preference on having notifications on this device.  It would end up being
+        var notificationId = window.localStorage.getItem("notificationId");
+        
+        if (notificationId != null) {
+            this.setState({
+                notifications: true
+            });
+        } else {
+            this.setState({
+                notifications: false
+            });
+        }
+
+        
     }
 
     loadData(sortBy) {
         fetch("api/birthdays?sort=" + sortBy, { credentials: 'include' })
-            .then( response => { 
+            .then( response => {
                 if (response.status === 401) {
                     this.setState({
                         isLoggedIn: false,
@@ -237,6 +326,21 @@ class Birthdays extends React.Component {
                                             <PersonIcon />
                                         </ListItemIcon>
                                         <ListItemText primary="Sort by name" />
+                                    </ListItem>
+
+                                    <Divider/>
+
+                                    <ListItem>
+                                        <ListItemIcon>
+                                            <NotificationsIcon />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Notifications" />
+                                        <ListItemSecondaryAction>
+                                            <Switch
+                                                onChange={this.toggleNotifications}
+                                                checked={this.state.notifications}
+                                            />
+                                        </ListItemSecondaryAction>
                                     </ListItem>
                                 </List>
                             </div>
