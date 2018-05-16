@@ -164,7 +164,7 @@ class Birthdays extends React.Component {
                     // TODO should be much like the other side of the toggle
                 }
             }); 
-        }cd 
+        }
 
         // TODO this whole thing should be restructured to use the promises api
     }
