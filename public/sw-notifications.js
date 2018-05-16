@@ -27,6 +27,8 @@ this.onpush = function(pe) {
 this.onfetch = function(fe) {
     var url = fe.request.url;
 
+    console.log("reg.scope", reg.scope);
+    console.log("url", url);
     if (url.startsWith(reg.scope) && url.endsWith("sw/subscribe")) {
         fe.respondWith(
             reg.pushManager.subscribe()
