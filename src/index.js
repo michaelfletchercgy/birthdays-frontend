@@ -370,5 +370,3 @@ class Birthdays extends React.Component {
 let StyledBirthdays = withStyles(styles)(Birthdays)
 
 ReactDOM.render(<StyledBirthdays />, document.getElementById('root'));
-unregister();
-

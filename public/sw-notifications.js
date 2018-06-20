@@ -6,6 +6,7 @@ this.oninstall = function(ev) {
 
 this.onactivate = function(ev) {
     console.log("Service worker is activated.");
+    self.clients.claim();
     
 };
 
@@ -33,6 +34,7 @@ this.onfetch = function(fe) {
         fe.respondWith(
             reg.pushManager.subscribe()
             .then(pushSubscription => {
+                console.log("have a pushSub", pushSubscription.endpoint);
                 return fetch("api/subscriptions", { 
                     method: 'POST',
                     credentials: 'same-origin',
