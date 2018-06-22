@@ -19,7 +19,7 @@ import Button from 'material-ui/Button';
 import Toolbar from 'material-ui/Toolbar';
 import 'typeface-roboto'
 //import registerServiceWorker from './registerServiceWorker';
-import { unregister } from './registerServiceWorker';
+//import { unregister } from './registerServiceWorker';
 
 import List from 'material-ui/List';
 import Drawer from 'material-ui/Drawer';  
