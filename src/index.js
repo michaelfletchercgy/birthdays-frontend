@@ -27,6 +27,13 @@ import ListSubheader from 'material-ui/List/ListSubheader';
 import Switch from 'material-ui/Switch';
 import Divider from 'material-ui/Divider';
 
+import { init } from '@sentry/browser';
+
+init({
+  dsn: 'http://4bd5d1e733f946ba9f01e7ab7a0c9f36@theplanet.ca:9000//2',
+  // ...
+});
+
 const styles = {
     root: {
       width: '100%',
