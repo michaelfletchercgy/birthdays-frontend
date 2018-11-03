@@ -1,12 +1,12 @@
 import React from 'react';
-import Dialog, {
+import {Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
-  } from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
-import Button from 'material-ui/Button';
-import MenuItem from 'material-ui/Menu/MenuItem';
+  } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import MenuItem from '@material-ui/core/MenuItem';
 
   
 class EditBirthdayDialog extends React.Component {

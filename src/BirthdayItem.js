@@ -1,11 +1,10 @@
 import React from 'react';
 
-import Menu, { MenuItem } from 'material-ui/Menu';
-import IconButton from 'material-ui/IconButton';
-import MoreHoriz from 'material-ui-icons/MoreHoriz';
+import {Menu, MenuItem} from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import MoreHoriz from '@material-ui/icons/MoreHoriz';
 
-import { ListItem, ListItemText, ListItemSecondaryAction } from 'material-ui/List';
-
+import { ListItem, ListItemText, ListItemSecondaryAction } from '@material-ui/core';
 
 class BirthdayItem extends React.Component {
     constructor(props) {

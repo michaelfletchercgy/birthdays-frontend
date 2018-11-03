@@ -2,30 +2,30 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import './index.css';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core';
 
 import EditBirthdayDialog from './EditBirthdayDialog'
 import RemoveBirthdayDialog from './RemoveBirthdayDialog'
 import BirthdayItem from './BirthdayItem'
-import AppBar from 'material-ui/AppBar';
-import MenuIcon from 'material-ui-icons/Menu';
-import PersonIcon from 'material-ui-icons/Person';
-import NotificationsIcon from 'material-ui-icons/Notifications';
-import ScheduleIcon from 'material-ui-icons/Schedule';
-import { ListItem, ListItemText, ListItemIcon, ListItemSecondaryAction } from 'material-ui/List';
-import IconButton from 'material-ui/IconButton';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import Toolbar from 'material-ui/Toolbar';
+import AppBar from '@material-ui/core/AppBar';
+import MenuIcon from '@material-ui/icons/Menu';
+import PersonIcon from '@material-ui/icons/Person';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import ScheduleIcon from '@material-ui/icons/Schedule';
+import { ListItem, ListItemText, ListItemIcon, ListItemSecondaryAction } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Toolbar from '@material-ui/core/Toolbar';
 import 'typeface-roboto'
 //import registerServiceWorker from './registerServiceWorker';
 //import { unregister } from './registerServiceWorker';
 
-import List from 'material-ui/List';
-import Drawer from 'material-ui/Drawer';  
-import ListSubheader from 'material-ui/List/ListSubheader';
-import Switch from 'material-ui/Switch';
-import Divider from 'material-ui/Divider';
+import List from '@material-ui/core/List';
+import Drawer from '@material-ui/core/Drawer';  
+import ListSubheader from '@material-ui/core/ListSubheader';
+import Switch from '@material-ui/core/Switch';
+import Divider from '@material-ui/core/Divider';
 
 import { init } from '@sentry/browser';
 

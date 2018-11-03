@@ -1,11 +1,11 @@
 import React from 'react';
-import Dialog, {
+import {Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-  } from 'material-ui/Dialog';
-import Button from 'material-ui/Button';
+  } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
   
 class RemoveBirthdayDialog extends React.Component {
     constructor(props) {
@@ -40,7 +40,7 @@ class RemoveBirthdayDialog extends React.Component {
     }
 
     render()  {
-        return (<Dialog open="true" onClose={this.cancelClicked}>
+        return (<Dialog open={true} onClose={this.cancelClicked}>
                     <DialogTitle>Remove Birthday?</DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
