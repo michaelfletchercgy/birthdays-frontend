@@ -7,7 +7,7 @@ import {Dialog,
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
-
+import { captureException } from '@sentry/browser';
   
 class EditBirthdayDialog extends React.Component {
     constructor(props) {
@@ -64,7 +64,7 @@ class EditBirthdayDialog extends React.Component {
             });                
         })
         .catch( (err) => { 
-            alert('oh no, something bad happened:' + err)
+            captureException(err);
         });
     }
 
@@ -81,7 +81,7 @@ class EditBirthdayDialog extends React.Component {
                 });                
             })
             .catch( (err) => { 
-                alert('oh no, something bad happened:' + err)
+                captureException(err);
             });
     }
 
@@ -118,7 +118,8 @@ class EditBirthdayDialog extends React.Component {
                 this.props.onDialogFinished();
             },
             (error) => {
-                alert('boom:' + error);
+                captureException(error);
+
             }
         )
     }
@@ -162,7 +163,7 @@ class EditBirthdayDialog extends React.Component {
                 this.loadDays(mth);
             },
             (error) => {
-                alert('boom:' + error);
+                captureException(error);
             }
         )
     }
