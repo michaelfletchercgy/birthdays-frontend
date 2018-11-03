@@ -31,6 +31,7 @@ import { init } from '@sentry/browser';
 
 init({
   dsn: 'http://4bd5d1e733f946ba9f01e7ab7a0c9f36@theplanet.ca:9000//2',
+  attachStacktrace: true
   // ...
 });
 
